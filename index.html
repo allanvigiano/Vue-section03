@@ -12,31 +12,31 @@
         <div class="small-6 columns">
             <h1 class="text-center">YOU</h1>
             <div class="healthbar">
-                <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;">
-
+                <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;" v-bind:style="{width: youCss}">
+                    {{ youCss }}
                 </div>
             </div>
         </div>
         <div class="small-6 columns">
             <h1 class="text-center">MONSTER</h1>
             <div class="healthbar">
-                <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;">
-
+                <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;" v-bind:style="{width: monsterCss}">
+                    {{ monsterCss }}
                 </div>
             </div>
         </div>
     </section>
-    <section class="row controls">
+    <section class="row controls" v-if="! commands">
         <div class="small-12 columns">
-            <button id="start-game">START NEW GAME</button>
+            <button id="start-game" @click="commands = true">START NEW GAME</button>
         </div>
     </section>
-    <section class="row controls">
+    <section class="row controls" v-if="commands">
         <div class="small-12 columns">
-            <button id="attack">ATTACK</button>
-            <button id="special-attack">SPECIAL ATTACK</button>
-            <button id="heal">HEAL</button>
-            <button id="give-up">GIVE UP</button>
+            <button id="attack"         @click="attack"     >ATTACK</button>
+            <button id="special-attack" @click="sAttack"    >SPECIAL ATTACK</button>
+            <button id="heal"           @click="heal"       >HEAL</button>
+            <button id="give-up"        @click="giveUp"     >GIVE UP</button>
         </div>
     </section>
     <section class="row log">
@@ -49,5 +49,75 @@
         </div>
     </section>
 </div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            commands: false,
+            healthYou: 100,
+            healthMonster: 100,
+        },
+        computed: {
+            youCss: function () {
+                return this.healthYou + '%';
+            },
+            monsterCss: function () {
+                return this.healthMonster + '%';
+            },
+        },
+        methods: {
+            giveUp: function () {
+                this.commands = false;
+                this.healthYou = 100;
+                this.healthMonster = 100;
+
+            },
+            attack: function (who) {
+                if(who == 'monster') {
+                    this.healthYou -= 5;
+                    console.log('Monster Attack');
+                }
+                else {
+                    this.healthMonster -= 5;
+                    this.monsterTurn();
+
+                }
+
+            },
+            sAttack: function (who) {
+                if(who == 'monster') {
+                    this.healthYou -= 7;
+                    console.log('Monster Super Attack');
+                }
+                else {
+                    this.healthMonster -= 7;
+                    this.monsterTurn();
+                }
+
+            },
+            heal: function (who) {
+                if(who == 'monster') {
+                    this.healthMonster += 5;
+                    console.log('Monster Heal');
+                }
+                else {
+                    this.healthYou += 5;
+                    this.monsterTurn();
+                }
+
+            },
+            monsterTurn: function () {
+                var random = Math.floor((Math.random() * 3) + 1);
+
+
+                if (random == 1) this.attack('monster');
+                if (random == 2) this.sAttack('monster');
+                if (random == 3) this.heal('monster');
+            }
+
+
+        }
+    });
+</script>
 </body>
 </html>
