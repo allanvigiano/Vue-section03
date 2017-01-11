@@ -31,7 +31,7 @@
             <button id="start-game" @click="commands = true">START NEW GAME</button>
         </div>
     </section>
-    <section class="row controls" v-if="commands">
+    <section class="row controls" v-else>
         <div class="small-12 columns">
             <button id="attack"         @click="attack"     >ATTACK</button>
             <button id="special-attack" @click="sAttack"    >SPECIAL ATTACK</button>
@@ -56,6 +56,7 @@
             commands: false,
             healthYou: 100,
             healthMonster: 100,
+            list: null,
         },
         computed: {
             youCss: function () {
@@ -114,7 +115,9 @@
                 if (random == 2) this.sAttack('monster');
                 if (random == 3) this.heal('monster');
             }
-
+            log: function (player, value) {
+                this.list.unshift({})
+            }
 
         }
     });
